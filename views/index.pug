@@ -1,0 +1,24 @@
+extends layout
+
+block append stylesheet
+    link(rel='stylesheet', href='https://unpkg.com/leaflet@1.4.0/dist/leaflet.css')
+    link(rel='stylesheet', href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css')
+    link(rel='stylesheet', href='css/index.css')
+
+block append script
+    script(src='https://unpkg.com/leaflet@1.4.0/dist/leaflet.js')
+    script(src='https://unpkg.com/topojson@3')
+    script(src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js')
+    script(src='https://unpkg.com/mapbox-gl-leaflet@0.0.4/leaflet-mapbox-gl.js')
+    script(src='https://d3js.org/d3.v5.min.js')
+    script(src='https://d3js.org/d3-array.v1.min.js')
+    script(src='https://d3js.org/d3-geo.v1.min.js')
+    script(src='https://npmcdn.com/mapbox-gl-circle/dist/mapbox-gl-circle.min.js')
+
+block content
+    div.row
+        - var attributes = {};
+        - attributes.class = 'col'
+        div#map&attributes(attributes)
+
+    script(src='js/main.js')

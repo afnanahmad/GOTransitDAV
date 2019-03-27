@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title= `${title}`
+    block head
+
+    block stylesheet
+      link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+      link(rel='stylesheet', heaf='https://fonts.googleapis.com/css?family=Roboto')
+      link(rel='stylesheet', href='/css/styles.css')
+
+    block script
+     
+
+  body
+    .container-fluid.h-100
+      div.title
+        h1 GO Transit Data Analytics and Visualization
+
+      block content
