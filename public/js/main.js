@@ -1,4 +1,4 @@
-/*var elem = document.getElementById("map");
+var elem = document.getElementById("map");
 var width = 0;
 var height = 0;
 if(elem) {
@@ -21,106 +21,112 @@ var gl = L.mapboxGL({
 	accessToken: 'pk.eyJ1IjoiYWFmbmFuIiwiYSI6ImNqdGM3MGluNTB0aWI0NW9hczk1dDFpaGcifQ.r9gLzEd9GQvVDVUeWOr0ow'
 }).addTo(map);
 
+function onEachFeature(feature, layer) {
+	var popupContent = "";
 
-d3.json("point/").then(function(collection) { 
-
-	for (var i in collection) {
-		var point = collection[i];
-		var LatLng = L.latLng(point.GPS_LATITUDE, point.GPS_LONGITUDE);
-		//console.log(collection[i].LatLng);
-
-		var circle = L.circleMarker(LatLng, {
-			color: 'red',
-			fillColor: '#f03',
-			fillOpacity: 0.3,
-			radius: 2
-		}).addTo(map);
-		var title = point.LONG_NAME + " -- "+ point.STOP_CODE;
-		// var marker = L.marker(LatLng, {title: title}).addTo(map);
-		
-		// marker.bindPopup(title);
-		circle.bindPopup(title);
+	if (feature.properties && feature.properties.popupContent) {
+		popupContent += feature.properties.popupContent;
+		popupContent += "<br>";
+		popupContent += "PASSENGER_IN: "+feature.properties.passenger_in;
 	}
 
-});*/
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiYWFmbmFuIiwiYSI6ImNqdGM3MGluNTB0aWI0NW9hczk1dDFpaGcifQ.r9gLzEd9GQvVDVUeWOr0ow';
-const map = new mapboxgl.Map({
-	container: 'map',
-	style: 'mapbox://styles/aafnan/cjtcb8d1411441fleg13ipnxd',
-	center: [-79.391787, 43.671436],
-	zoom: 11.0,
-	minZoom: 7.0,
-	maxZoom: 14.0
-});
-
-var nav = new mapboxgl.NavigationControl();
-map.addControl(nav, 'top-left');
-
-map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector('map')}));
-
-var scale = new mapboxgl.ScaleControl({
-    maxWidth: 80,
-    unit: 'imperial'
-});
-map.addControl(scale);
-
-scale.setUnit('metric');
-
-function pointOnCircle(point) {
-	return {
-		"type": "Point",
-		"coordinates": [
-		point.GPS_LATITUDE,
-		point.GPS_LONGITUDE
-		]
-	};
+	layer.bindPopup(popupContent);
 }
 
-map.on('load', function () {
-	// map.addSource('point', {
-	// 	"type": "geojson",
-	// 	"data": pointOnCircle(0)
-	// });
+function convertRange( value, r1, r2 ) { 
+    return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+}
 
-	// map.addLayer({
-	// 	"id": "point",
-	// 	"source": "point",
-	// 	"type": "circle",
-	// 	"paint": {
-	// 		"circle-radius": 10,
-	// 		"circle-color": "#007cbf"
-	// 	}
-	// });
+function perc2color(perc) {
+	var r, g, b = 0;
+	if(perc < 50) {
+		r = 255;
+		g = Math.round(5.1 * perc);
+	}
+	else {
+		g = 255;
+		r = Math.round(510 - 5.10 * perc);
+	}
+	var h = r * 0x10000 + g * 0x100 + b * 0x1;
+	return '#' + ('000000' + h.toString(16)).slice(-6);
+}
+
+L.control.scale().addTo(map);
+
+d3.json("api/aggregate_points/").then(function(collection) { 
 
 
-	
-
-	d3.json("point/").then(function(collection) { 
-		console.log("downloaded points");
-
-		var i = 0;
-
-		for (var i in collection) {
-
-			i++;
-
-			if (i > 500) {
-				break;
-			}
-
-			var point = collection[i];
-
-			var lat = point.GPS_LATITUDE;
-			var lng = point.GPS_LONGITUDE;
-
-			var myCircle = new MapboxCircle({lat: lat, lng: lng}, 500, {
-				editable: false,
-				minRadius: 500,
-				fillColor: '#29AB87'
-			}).addTo(map);
-
-		}
+	var filtered = collection.filter(function(point){
+		return point.PASSENGER_IN > 0;
 	});
-});
 
+	var features = [];
+
+	for (var i in filtered) {
+
+		var point = filtered[i];
+
+		var geojsonFeature = {
+			"type": "Feature",
+			"properties": {
+				"name": point.LONG_NAME,
+				"amenity": "Bus Stop",
+				"popupContent": point.LONG_NAME + " - " + point.SHORT_NAME,
+				"passenger_in": point.PASSENGER_IN,
+				"passenger_out": point.PASSENGER_OUT
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [point.GPS_LONGITUDE, point.GPS_LATITUDE]
+			}
+		};
+
+		features.push(geojsonFeature);
+	}
+
+	var map_in = filtered.map(function(o) { return o.PASSENGER_IN; });
+	var max_in = Math.max.apply(Math, map_in);
+	var min_in = Math.min.apply(Math, map_in);
+
+	var map_out = filtered.map(function(o) { return o.PASSENGER_OUT; });
+	var max_out = Math.max.apply(Math, map_out);
+	var min_out = Math.min.apply(Math, map_out);
+
+
+	var stopFeatures = {
+		"type": "FeatureCollection",
+		"features":	features
+	};
+
+	var stopLayer = L.geoJSON([stopFeatures], {
+		style: function (feature) {
+			return feature.properties && feature.properties.style;
+		},
+
+		onEachFeature: onEachFeature,
+
+		pointToLayer: function (feature, latlng) {
+
+			var radius = convertRange( feature.properties.passenger_in, [ min_in, max_in ], [ 3, 20 ] );
+			var percentage = convertRange( feature.properties.passenger_in, [ min_in, max_in ], [ 1, 100 ] );
+
+			var color = perc2color(percentage);
+
+			return L.circleMarker(latlng, {
+				radius: radius,
+				fillColor: color,
+				color: "#000",
+				weight: 0.4,
+				opacity: 1,
+				fillOpacity: 0.8
+			});
+		}
+	}).addTo(map);
+
+	var overlays = { 
+		"In traffic": stopLayer,
+		"Out traffic": stopLayer
+	};
+
+	L.control.layers(gl, overlays).addTo(map);
+});

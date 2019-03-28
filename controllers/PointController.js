@@ -1,4 +1,5 @@
 var PointModel = require('../models/PointModel.js');
+var PointSlotsModel = require('../models/PointSlotModel.js');
 
 /**
  * PointController.js
