@@ -9,6 +9,7 @@ const slotRouter = require('./routes/SlotsRoutes');
 const aggregatePointsRouter = require('./routes/AggregatedPointsRoutes');
 const pointSlotDayRouter = require('./routes/PointSlotsDayRoutes');
 const pointFlowByDateRouter = require('./routes/PointFlowByDateRoutes');
+const pointFlowBySlotRouter = require('./routes/PointFlowBySlotRoutes');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -27,5 +28,6 @@ app.use('/api/slots', slotRouter);
 app.use('/api/aggregate_points', aggregatePointsRouter);
 app.use('/api/point_slot_day', pointSlotDayRouter);
 app.use('/api/point_flow_by_date', pointFlowByDateRouter);
+app.use('/api/point_flow_by_slot', pointFlowBySlotRouter);
 
 module.exports = app;
