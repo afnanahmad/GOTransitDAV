@@ -29,7 +29,6 @@ require([
     }), "top-right");
 
     require(["esri/geometry/Circle"], function(Circle) {
-        
         var circleGeometry = new Circle([-79.391787, 43.671436],{
             "radius": 2000
           });

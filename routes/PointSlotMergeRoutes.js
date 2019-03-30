@@ -10,6 +10,7 @@ router.get('/', PointSlotMergeController.list);
 /*
  * GET
  */
-router.get('/:slot', PointSlotMergeController.show);
+router.get('/:point', PointSlotMergeController.show);
+
 
 module.exports = router;

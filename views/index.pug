@@ -3,7 +3,7 @@ extends layout
 block append stylesheet
     link(rel='stylesheet', href='https://unpkg.com/leaflet@1.4.0/dist/leaflet.css')
     link(rel='stylesheet', href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css')
-    link(rel='stylesheet', href='css/index.css')
+    link(rel='stylesheet', href='/css/index.css')
 
 block append script
     script(src='https://unpkg.com/leaflet@1.4.0/dist/leaflet.js')
@@ -16,9 +16,28 @@ block append script
     script(src='https://npmcdn.com/mapbox-gl-circle/dist/mapbox-gl-circle.min.js')
 
 block content
-    div.row
-        - var attributes = {};
-        - attributes.class = 'col'
-        div#map&attributes(attributes)
+    .row.justify-content-center
+        #nav.col-lg-8
+            p 
+                h6 Select Visualization Type: 
+                div(role='group').btn-group
+                    div(role='group').btn-group
+                        button(data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button")#btnGroupDrop1.btn.btn-secondary.dropdown-toggle Whole Month
+                        div(aria-labelledby="btnGroupDrop1").dropdown-menu
+                            a(href="#", tabindex=-1, role="menuitem")#whole-month-passenger-in.dropdown-item Passenger In
+                            a(href="#", tabindex=-1, role="menuitem")#whole-month-passenger-out.dropdown-item Passenger Out
+                    button(type="button")#wheel-chair.btn.btn-secondary Wheel Chair
+                    div(role='group').btn-group
+                        button(data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button")#btnGroupDrop1.btn.btn-secondary.dropdown-toggle Weekdays
+                        div(aria-labelledby="btnGroupDrop1").dropdown-menu
+                            a(href="#", tabindex=-1, role="menuitem")#weekday-passenger-in.dropdown-item Passenger In
+                            a(href="#", tabindex=-1, role="menuitem")#weekday-passenger-out.dropdown-item Passenger Out
+                    div(role='group').btn-group
+                        button(data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button")#btnGroupDrop1.btn.btn-secondary.dropdown-toggle Weekend
+                        div(aria-labelledby="btnGroupDrop1").dropdown-menu
+                            a(href="#", tabindex=-1, role="menuitem")#weekend-passenger-in.dropdown-item Passenger In
+                            a(href="#", tabindex=-1, role="menuitem")#weekend-passenger-out.dropdown-item Passenger Out
+    .row
+        #map.col
 
     script(src='js/main.js')

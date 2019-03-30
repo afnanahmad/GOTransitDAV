@@ -27,7 +27,7 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        SlotsModel.findOne({_id: id}, function (err, Slots) {
+        SlotsModel.find({POINT_ID: id}, function (err, Slots) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting Slots.',

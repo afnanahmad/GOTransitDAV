@@ -7,14 +7,11 @@ if(elem) {
    height = rect.height;  
 }
 
-var projection = d3.geoEqualEarth(),
-    path = d3.geoPath(projection);
-
 console.log(width+" x "+height);
 
 var centerCoordinates = [43.6814927, -79.3639761];
 
-var map = L.map('map').setView(centerCoordinates, 11);
+var map = L.map('map').setView(centerCoordinates, 10);
 
 var gl = L.mapboxGL({
 	style: 'mapbox://styles/aafnan/cjtcb8d1411441fleg13ipnxd',
@@ -22,15 +19,27 @@ var gl = L.mapboxGL({
 }).addTo(map);
 
 function onEachFeature(feature, layer) {
+
 	var popupContent = "";
+	button = "<a href='viz/point/"+feature.properties.point_id+"' class='btn btn-info' role='button'>Details ></a>";
+	//button = "<button type='button' class='thisbutton' point='"+ feature.properties.point_id +"'>Details</button>";
 
 	if (feature.properties && feature.properties.popupContent) {
+		popupContent += "<h5>";
 		popupContent += feature.properties.popupContent;
-		popupContent += "<br>";
-		popupContent += "PASSENGER_IN: "+feature.properties.passenger_in;
+		popupContent += "</h5>";
+		popupContent += "<br>"+button;
 	}
 
-	layer.bindPopup(popupContent);
+	var content = L.DomUtil.create('div', 'content'),
+	popup = L.popup().setContent(popupContent);
+	
+	L.DomEvent.addListener(content, 'click', function(event){
+		// do stuff
+		console.log("yolo"+ feature);
+	}, layer);
+
+	layer.bindPopup(popup);
 }
 
 function convertRange( value, r1, r2 ) { 
@@ -53,80 +62,126 @@ function perc2color(perc) {
 
 L.control.scale().addTo(map);
 
-d3.json("api/aggregate_points/").then(function(collection) { 
+var stopLayer;
+
+function load_whole_month(inOrOut) {
+
+	d3.json("api/aggregate_points/").then(function(collection) { 
+
+		var filtered = collection.filter(function(point){
+			return point.PASSENGER_IN > 0;
+		});
+
+		var features = [];
+
+		for (var i in filtered) {
+
+			var point = filtered[i];
+
+			var geojsonFeature = {
+				"type": "Feature",
+				"properties": {
+					"name": point.LONG_NAME,
+					"amenity": "Bus Stop",
+					"popupContent": point.LONG_NAME,
+					"passenger_in": point.PASSENGER_IN,
+					"passenger_out": point.PASSENGER_OUT,
+					"point_id": point._id
+				},
+				"geometry": {
+					"type": "Point",
+					"coordinates": [point.GPS_LONGITUDE, point.GPS_LATITUDE]
+				}
+			};
+
+			features.push(geojsonFeature);
+		}
+
+		var map_in = filtered.map(function(o) { return o.PASSENGER_IN; });
+		var max_in = Math.max.apply(Math, map_in);
+		var min_in = Math.min.apply(Math, map_in);
+
+		var map_out = filtered.map(function(o) { return o.PASSENGER_OUT; });
+		var max_out = Math.max.apply(Math, map_out);
+		var min_out = Math.min.apply(Math, map_out);
 
 
-	var filtered = collection.filter(function(point){
-		return point.PASSENGER_IN > 0;
-	});
-
-	var features = [];
-
-	for (var i in filtered) {
-
-		var point = filtered[i];
-
-		var geojsonFeature = {
-			"type": "Feature",
-			"properties": {
-				"name": point.LONG_NAME,
-				"amenity": "Bus Stop",
-				"popupContent": point.LONG_NAME + " - " + point.SHORT_NAME,
-				"passenger_in": point.PASSENGER_IN,
-				"passenger_out": point.PASSENGER_OUT
-			},
-			"geometry": {
-				"type": "Point",
-				"coordinates": [point.GPS_LONGITUDE, point.GPS_LATITUDE]
-			}
+		var stopFeatures = {
+			"type": "FeatureCollection",
+			"features":	features
 		};
 
-		features.push(geojsonFeature);
-	}
+		stopLayer = L.geoJSON([stopFeatures], {
+			style: function (feature) {
+				return feature.properties && feature.properties.style;
+			},
 
-	var map_in = filtered.map(function(o) { return o.PASSENGER_IN; });
-	var max_in = Math.max.apply(Math, map_in);
-	var min_in = Math.min.apply(Math, map_in);
+			onEachFeature: onEachFeature,
 
-	var map_out = filtered.map(function(o) { return o.PASSENGER_OUT; });
-	var max_out = Math.max.apply(Math, map_out);
-	var min_out = Math.min.apply(Math, map_out);
+			pointToLayer: function (feature, latlng) {
 
+				var radius = 0;
+				var percentage = 0;
+				
+				if (inOrOut) {
+					radius = convertRange( feature.properties.passenger_in, [ min_in, max_in ], [ 3, 20 ] );
+					percentage = convertRange( feature.properties.passenger_in, [ max_in, min_in ], [ 1, 100 ] );
+				} else {
+					radius = convertRange( feature.properties.passenger_out, [ min_out, max_out ], [ 3, 20 ] );
+					percentage = convertRange( feature.properties.passenger_out, [ max_out, min_out ], [ 1, 100 ] );
+				}
 
-	var stopFeatures = {
-		"type": "FeatureCollection",
-		"features":	features
-	};
+				var color = perc2color(percentage);
 
-	var stopLayer = L.geoJSON([stopFeatures], {
-		style: function (feature) {
-			return feature.properties && feature.properties.style;
-		},
+				return L.circleMarker(latlng, {
+					radius: radius,
+					fillColor: color,
+					color: "#000",
+					weight: 0.4,
+					opacity: 1,
+					fillOpacity: 0.5
+				});
+			}
+		}).addTo(map);
 
-		onEachFeature: onEachFeature,
+	});
+}
 
-		pointToLayer: function (feature, latlng) {
-
-			var radius = convertRange( feature.properties.passenger_in, [ min_in, max_in ], [ 3, 20 ] );
-			var percentage = convertRange( feature.properties.passenger_in, [ min_in, max_in ], [ 1, 100 ] );
-
-			var color = perc2color(percentage);
-
-			return L.circleMarker(latlng, {
-				radius: radius,
-				fillColor: color,
-				color: "#000",
-				weight: 0.4,
-				opacity: 1,
-				fillOpacity: 0.8
-			});
-		}
-	}).addTo(map);
-
-	var overlays = { 
-		"In traffic": stopLayer,
-		"Out traffic": stopLayer
-	};
-
-	L.control.layers(gl, overlays).addTo(map);
+map.on('popupopen', function() {  
+	// $('.thisbutton').click(function(e){
+	//   var val = $('.thisbutton').attr('point');
+	//   console.log("One of the many Small Polygon Links was clicked");
+	// });
 });
+
+$( "#whole-month-passenger-in" ).click(function() {
+	map.removeLayer(stopLayer);
+	load_whole_month(true);
+});
+
+$( "#whole-month-passenger-out" ).click(function() {
+	map.removeLayer(stopLayer);
+	load_whole_month(false);
+});
+
+$( "#wheel-chair" ).click(function() {
+	map.removeLayer(stopLayer);
+});
+
+$( "#weekday-passenger-in" ).click(function() {
+	map.removeLayer(stopLayer);
+});
+
+$( "#weekday-passenger-out" ).click(function() {
+	map.removeLayer(stopLayer);
+});
+
+$( "#weekend-passenger-in" ).click(function() {
+	map.removeLayer(stopLayer);
+});
+
+$( "#weekend-passenger-out" ).click(function() {
+	map.removeLayer(stopLayer);
+});
+
+load_whole_month(true);

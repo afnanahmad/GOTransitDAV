@@ -1,0 +1,44 @@
+extends layout
+
+block append stylesheet
+    link(rel='stylesheet', href='https://unpkg.com/leaflet@1.4.0/dist/leaflet.css')
+    link(rel='stylesheet', href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css')
+    link(rel='stylesheet', href='/css/viz_point.css')
+
+block append script
+    script(src='https://unpkg.com/leaflet@1.4.0/dist/leaflet.js')
+    script(src='https://unpkg.com/topojson@3')
+    script(src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js')
+    script(src='https://unpkg.com/mapbox-gl-leaflet@0.0.4/leaflet-mapbox-gl.js')
+    script(src='http://d3js.org/d3.v3.min.js')
+    script(src='https://npmcdn.com/mapbox-gl-circle/dist/mapbox-gl-circle.min.js')
+
+block content
+    .row.justify-content-center
+        .col-lg-8
+            table.table
+                thead
+                    th Point ID
+                    th Point Name
+                    th Passengers In
+                    th Passengers Out
+                tbody
+                    tr
+                        td
+                            span#point_id
+                        td
+                            span#point_name
+                        td
+                            span#passenger_in
+                        td
+                            span#passenger_out
+    .row.justify-content-center  
+            .col-8
+                h4 Traffic Flow Aggregate for Whole Month
+                #chart
+    .row.justify-content-center 
+            .col-6
+                #map.col
+        
+
+    script(src='../../js/viz_point.js')
