@@ -102,7 +102,7 @@ function load_data_from_api(api, inOrOut, wheelchair) {
 			features.push(geojsonFeature);
 		}
 
-		var max_num = 20000;
+		var max_num = 40000;
 
 		var map_in = filtered.map(function(o) { return o.PASSENGER_IN; });
 		var max_in = max_num; Math.max.apply(Math, map_in);
@@ -141,14 +141,14 @@ function load_data_from_api(api, inOrOut, wheelchair) {
 					
 					if (!wheelchair) {
 						if (inOrOut) {
-							radius = convertRange( limit_number(feature.properties.passenger_in, max_num) , [ min_in, max_in ], [ 3, 15 ] );
+							radius = convertRange( limit_number(feature.properties.passenger_in, max_num) , [ min_in, max_in ], [ 3, 20 ] );
 							percentage = convertRange( limit_number(feature.properties.passenger_in, max_num), [ max_in, min_in ], [ 1, 100 ] );
 						} else {
-							radius = convertRange( limit_number(feature.properties.passenger_out, max_num), [ min_out, max_out ], [ 3, 15 ] );
+							radius = convertRange( limit_number(feature.properties.passenger_out, max_num), [ min_out, max_out ], [ 3, 20 ] );
 							percentage = convertRange( limit_number(feature.properties.passenger_out, max_num), [ max_out, min_out ], [ 1, 100 ] );
 						}
 					} else {
-						radius = convertRange( limit_number(feature.properties.wheelchair_count, wheel_max), [ wheel_min, wheel_max ], [ 3, 15 ] );
+						radius = convertRange( limit_number(feature.properties.wheelchair_count, wheel_max), [ wheel_min, wheel_max ], [ 3, 20 ] );
 						percentage = convertRange( limit_number(feature.properties.wheelchair_count, wheel_max), [ wheel_max, wheel_min ], [ 1, 100 ] );
 					}
 
