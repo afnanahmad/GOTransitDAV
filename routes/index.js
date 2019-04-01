@@ -10,5 +10,9 @@ router.get('/viz/point/:id', (req, res) => {
   res.render('viz_point', { title: 'GO Transit DAV' });
 });
 
+router.get('/routes', (req, res) => {
+  res.render('routes', { title: 'GO Transit DAV' });
+});
+
 
 module.exports = router;

@@ -19,6 +19,4 @@ db.point_slots_by_day.aggregate([ {
         POINT_ID: {
         	'$first': '$POINT_ID'   
         }
-    },
-    { '$out': 'point_flow_by_date' }
-}], {})
+    }},{ $out: 'point_slot_by_date'}], {})

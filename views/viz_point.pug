@@ -32,13 +32,18 @@ block content
                             span#passenger_in
                         td
                             span#passenger_out
+    .row.justify-content-center 
+            .col-8
+                #map.col
+    .mt-5
     .row.justify-content-center  
             .col-8
-                h4 Traffic Flow Aggregate for Whole Month
+                h4 Traffic Flow Aggregate by Time Slot
                 #chart
-    .row.justify-content-center 
-            .col-6
-                #map.col
-        
+    .mt-5
+    .row.justify-content-center  
+            .col-8
+                h4 Traffic Flow Aggregate by Day
+                #chart1
 
     script(src='../../js/viz_point.js')

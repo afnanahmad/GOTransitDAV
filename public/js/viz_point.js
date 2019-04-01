@@ -11,7 +11,7 @@ console.log(width+" x "+height);
 
 var centerCoordinates = [43.6814927, -79.3639761];
 
-var map = L.map('map').setView(centerCoordinates, 11);
+var map = L.map('map').setView(centerCoordinates, 10);
 
 var gl = L.mapboxGL({
 	style: 'mapbox://styles/aafnan/cjtcb8d1411441fleg13ipnxd',
@@ -107,7 +107,7 @@ function drawChart(data) {
 }
 
 
-function draw_new_chart(data) {
+function draw_new_chart(data, chart_container) {
 
     // Set the dimensions of the canvas / graph
     var margin = {top: 30, right: 20, bottom: 70, left: 50},
@@ -134,7 +134,7 @@ function draw_new_chart(data) {
         .y(function(d) { return y(d.value); });
 
     // Adds the svg canvas
-    var svg = d3.select("#chart")
+    var svg = d3.select("#"+chart_container)
                 .append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
@@ -162,7 +162,7 @@ function draw_new_chart(data) {
             .attr("class", "line")
             .style("stroke", function() { // Add the colours dynamically
                 return d.color = color(d.key); })
-            .attr("id", 'tag'+d.key.replace(/\s+/g, '')) // assign ID
+            .attr("id", 'tag'+chart_container+'-'+d.key.replace(/\s+/g, '')) // assign ID
             .attr("d", priceline(d.values));
 
         // Add the Legend
@@ -177,7 +177,7 @@ function draw_new_chart(data) {
                 var active   = d.active ? false : true,
                 newOpacity = active ? 0 : 1; 
                 // Hide or show the elements based on the ID
-                d3.select("#tag"+d.key.replace(/\s+/g, ''))
+                d3.select('#tag'+chart_container+'-'+d.key.replace(/\s+/g, ''))
                     .transition().duration(100) 
                     .style("opacity", newOpacity); 
                 // Update whether or not the elements are active
@@ -209,20 +209,131 @@ $.getJSON('/api/slots/'+id, function(slots){
         arr.push(
             {
                 name: 'Passenger In',
-                slot:date,
+                slot: date,
                 value: slot.PASSENGER_IN,
             }
         );
         arr.push(
             {
                 name: 'Passenger Out',
-                slot:date,
+                slot: date,
                 value: slot.PASSENGER_OUT
             }
         );
     }
 
-    draw_new_chart(arr);
+    draw_new_chart(arr, "chart");
 });
 
+$.getJSON('/api/point_flow_by_date/'+id, function(slots){
+    var arr = [];
 
+    for (var i in slots) {
+        var slot = slots[i];
+        var date = new Date(slot.OPD_DATE);
+        arr.push (
+            {
+                name: 'Passenger In',
+                slot: date,
+                value: slot.PASSENGER_IN,
+            }
+        );
+        arr.push(
+            {
+                name: 'Passenger Out',
+                slot: date,
+                value: slot.PASSENGER_OUT
+            }
+        );
+    }
+
+    var sorted_array = arr.sort(function(a,b){
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return b.slot - a.slot;
+      });
+
+    draw_new_chart(arr, "chart1");
+});
+
+isItWeekEnd = function() {
+    var d = new Date();
+    var dateValue = d.getDay(); 
+    if(dateValue == 0 || dateValue == 6)
+        return true;
+    else 
+        return false;  
+}
+
+function calculate_dates()
+{
+    var date = new Date();
+    date.setFullYear(2017);
+    date.setMonth(6);
+    date.setDate(1);
+    date.setUTCSeconds(0);
+    date.setUTCMinutes(0);
+    date.setHours(0)
+
+    var dates = [];
+
+    for (var i = 0; i < 31; i++) {
+        date.setDate(i+1);
+
+        dates.push(date);
+    }
+
+
+    return dates;
+}
+
+function calculate_weekends()
+{
+    var date = new Date();
+    date.setFullYear(2017);
+    date.setMonth(6);
+    date.setDate(1);
+    date.setUTCSeconds(0);
+    date.setUTCMinutes(0);
+    date.setHours(0)
+
+    var dates = [];
+
+    for (var i = 0; i < 31; i++) {
+        date.setDate(i+1);
+
+        var dateValue = date.getDay();
+        if(dateValue == 0 || dateValue == 6)
+            dates.push(date);
+    }
+
+
+    return dates;
+}
+
+function calculate_weekdays()
+{
+    var date = new Date();
+    date.setFullYear(2017);
+    date.setMonth(6);
+    date.setDate(1);
+    date.setUTCSeconds(0);
+    date.setUTCMinutes(0);
+    date.setHours(0)
+
+    var dates = [];
+
+    for (var i = 0; i < 31; i++) {
+        date.setDate(i+1);
+
+        var dateValue = date.getDay();
+        if(dateValue != 0 && dateValue != 6)
+            dates.push(date);
+    }
+
+
+    return dates;
+}
+
+console.log("weekends: "+calculate_weekends());
+console.log("weekends: "+calculate_weekdays());

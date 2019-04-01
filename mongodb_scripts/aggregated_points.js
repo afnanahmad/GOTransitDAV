@@ -10,6 +10,9 @@ db.descriptive_slots.aggregate([{
             PASSENGER_IN: {
                 $sum: "$PASSENGER_IN"
             },
+            POINT_ID: {
+                $first: "$POINT_ID"
+            },
             STOP_CODE: {
                 $first: "$STOP_CODE"
             },

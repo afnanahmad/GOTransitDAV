@@ -17,10 +17,13 @@ html
 
   body
     .container-fluid.h-100
-      div.title
-        h1 GO Transit Data Analytics and Visualization
+      div.d-flex.justify-content-center
+        a(href="/").logo-link
+          .title
+            img(src='/img/go_transit_logo.png' height=30).logo 
+            span.logo-text DAV
 
       block content
     footer.footer.justify-content-center
       .container.text-center
-        p Copyright © 2019 - Afnan Ahmad & Maryam Jameela
+        p.footer-text Copyright © 2019 - Afnan Ahmad & Maryam Jameela | Data Provider: GO Transit

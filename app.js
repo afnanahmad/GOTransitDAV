@@ -10,6 +10,10 @@ const aggregatePointsRouter = require('./routes/AggregatedPointsRoutes');
 const pointSlotDayRouter = require('./routes/PointSlotsDayRoutes');
 const pointFlowByDateRouter = require('./routes/PointFlowByDateRoutes');
 const pointFlowBySlotRouter = require('./routes/PointFlowBySlotRoutes');
+const pointFlowByWeekdayRouter = require('./routes/PointFlowByWeekdaysRoutes');
+const pointFlowByWeekendRouter = require('./routes/PointFlowByWeekendRoutes');
+const pointFlowByCommuteOnRouter = require('./routes/CommuteOnPointsRoutes');
+const pointFlowByCommuteOffRouter = require('./routes/CommuteOffPointsRoutes');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -29,5 +33,9 @@ app.use('/api/aggregate_points', aggregatePointsRouter);
 app.use('/api/point_slot_day', pointSlotDayRouter);
 app.use('/api/point_flow_by_date', pointFlowByDateRouter);
 app.use('/api/point_flow_by_slot', pointFlowBySlotRouter);
+app.use('/api/point_flow_weekday', pointFlowByWeekdayRouter);
+app.use('/api/point_flow_weekend', pointFlowByWeekendRouter);
+app.use('/api/commute_on', pointFlowByCommuteOnRouter);
+app.use('/api/commute_off', pointFlowByCommuteOffRouter);
 
 module.exports = app;

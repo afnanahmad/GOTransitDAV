@@ -28,7 +28,7 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        PointModel.findOne({POINT_ID: id}, function (err, Point) {
+        PointModel.findOne({POINT_ID: parseInt(id)}, function (err, Point) {
             console.log("Error: "+err);
             if (err) {
                 return res.status(500).json({
