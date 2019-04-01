@@ -27,7 +27,9 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        PointFlowByWeekdaysModel.findOne({_id: id}, function (err, PointFlowByWeekdays) {
+        PointFlowByWeekdaysModel.findOne({
+            _id: id
+        }, function (err, PointFlowByWeekdays) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointFlowByWeekdays.',
@@ -48,12 +50,12 @@ module.exports = {
      */
     create: function (req, res) {
         var PointFlowByWeekdays = new PointFlowByWeekdaysModel({
-			POINT_ID : req.body.POINT_ID,
-			LONG_NAME : req.body.LONG_NAME,
-			GPS_LONGITDUE : req.body.GPS_LONGITDUE,
-			GPS_LATITUDE : req.body.GPS_LATITUDE,
-			PASSENGER_IN : req.body.PASSENGER_IN,
-			PASSENGER_OUT : req.body.PASSENGER_OUT
+            POINT_ID: req.body.POINT_ID,
+            LONG_NAME: req.body.LONG_NAME,
+            GPS_LONGITDUE: req.body.GPS_LONGITDUE,
+            GPS_LATITUDE: req.body.GPS_LATITUDE,
+            PASSENGER_IN: req.body.PASSENGER_IN,
+            PASSENGER_OUT: req.body.PASSENGER_OUT
 
         });
 
@@ -73,7 +75,9 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
-        PointFlowByWeekdaysModel.findOne({_id: id}, function (err, PointFlowByWeekdays) {
+        PointFlowByWeekdaysModel.findOne({
+            _id: id
+        }, function (err, PointFlowByWeekdays) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointFlowByWeekdays',
@@ -87,12 +91,12 @@ module.exports = {
             }
 
             PointFlowByWeekdays.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : PointFlowByWeekdays.POINT_ID;
-			PointFlowByWeekdays.LONG_NAME = req.body.LONG_NAME ? req.body.LONG_NAME : PointFlowByWeekdays.LONG_NAME;
-			PointFlowByWeekdays.GPS_LONGITDUE = req.body.GPS_LONGITDUE ? req.body.GPS_LONGITDUE : PointFlowByWeekdays.GPS_LONGITDUE;
-			PointFlowByWeekdays.GPS_LATITUDE = req.body.GPS_LATITUDE ? req.body.GPS_LATITUDE : PointFlowByWeekdays.GPS_LATITUDE;
-			PointFlowByWeekdays.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointFlowByWeekdays.PASSENGER_IN;
-			PointFlowByWeekdays.PASSENGER_OUT = req.body.PASSENGER_OUT ? req.body.PASSENGER_OUT : PointFlowByWeekdays.PASSENGER_OUT;
-			
+            PointFlowByWeekdays.LONG_NAME = req.body.LONG_NAME ? req.body.LONG_NAME : PointFlowByWeekdays.LONG_NAME;
+            PointFlowByWeekdays.GPS_LONGITDUE = req.body.GPS_LONGITDUE ? req.body.GPS_LONGITDUE : PointFlowByWeekdays.GPS_LONGITDUE;
+            PointFlowByWeekdays.GPS_LATITUDE = req.body.GPS_LATITUDE ? req.body.GPS_LATITUDE : PointFlowByWeekdays.GPS_LATITUDE;
+            PointFlowByWeekdays.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointFlowByWeekdays.PASSENGER_IN;
+            PointFlowByWeekdays.PASSENGER_OUT = req.body.PASSENGER_OUT ? req.body.PASSENGER_OUT : PointFlowByWeekdays.PASSENGER_OUT;
+
             PointFlowByWeekdays.save(function (err, PointFlowByWeekdays) {
                 if (err) {
                     return res.status(500).json({

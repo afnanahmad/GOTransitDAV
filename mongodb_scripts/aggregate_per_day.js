@@ -1,4 +1,4 @@
-db.point_slots_by_day.aggregate([ {
+db.point_slots_by_day.aggregate([{
     '$group': {
         _id: {
             POINT_ID: '$POINT_ID',
@@ -11,12 +11,15 @@ db.point_slots_by_day.aggregate([ {
             '$sum': '$PASSENGER_IN'
         },
         WHEELCHAIR_COUNT: {
-          '$sum': '$WHEELCHAIR_COUNT'  
+            '$sum': '$WHEELCHAIR_COUNT'
         },
         OPD_DATE: {
             '$first': '$OPD_DATE'
         },
         POINT_ID: {
-        	'$first': '$POINT_ID'   
+            '$first': '$POINT_ID'
         }
-    }},{ $out: 'point_slot_by_date'}], {})
+    }
+}, {
+    $out: 'point_slot_by_date'
+}], {})

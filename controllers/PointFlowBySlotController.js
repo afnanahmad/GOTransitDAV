@@ -27,7 +27,9 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        PointFlowBySlotModel.find({POINT_ID: id}, function (err, PointFlowBySlot) {
+        PointFlowBySlotModel.find({
+            POINT_ID: id
+        }, function (err, PointFlowBySlot) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointFlowBySlot.',
@@ -48,11 +50,11 @@ module.exports = {
      */
     create: function (req, res) {
         var PointFlowBySlot = new PointFlowBySlotModel({
-			PASSENGER_OUT : req.body.PASSENGER_OUT,
-			PASSENGER_IN : req.body.PASSENGER_IN,
-			WHEELCHAIR_COUNT : req.body.WHEELCHAIR_COUNT,
-			TIME_SLOT : req.body.TIME_SLOT,
-			POINT_ID : req.body.POINT_ID
+            PASSENGER_OUT: req.body.PASSENGER_OUT,
+            PASSENGER_IN: req.body.PASSENGER_IN,
+            WHEELCHAIR_COUNT: req.body.WHEELCHAIR_COUNT,
+            TIME_SLOT: req.body.TIME_SLOT,
+            POINT_ID: req.body.POINT_ID
 
         });
 
@@ -72,7 +74,9 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
-        PointFlowBySlotModel.findOne({_id: id}, function (err, PointFlowBySlot) {
+        PointFlowBySlotModel.findOne({
+            _id: id
+        }, function (err, PointFlowBySlot) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointFlowBySlot',
@@ -86,11 +90,11 @@ module.exports = {
             }
 
             PointFlowBySlot.PASSENGER_OUT = req.body.PASSENGER_OUT ? req.body.PASSENGER_OUT : PointFlowBySlot.PASSENGER_OUT;
-			PointFlowBySlot.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointFlowBySlot.PASSENGER_IN;
-			PointFlowBySlot.WHEELCHAIR_COUNT = req.body.WHEELCHAIR_COUNT ? req.body.WHEELCHAIR_COUNT : PointFlowBySlot.WHEELCHAIR_COUNT;
-			PointFlowBySlot.TIME_SLOT = req.body.TIME_SLOT ? req.body.TIME_SLOT : PointFlowBySlot.TIME_SLOT;
-			PointFlowBySlot.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : PointFlowBySlot.POINT_ID;
-			
+            PointFlowBySlot.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointFlowBySlot.PASSENGER_IN;
+            PointFlowBySlot.WHEELCHAIR_COUNT = req.body.WHEELCHAIR_COUNT ? req.body.WHEELCHAIR_COUNT : PointFlowBySlot.WHEELCHAIR_COUNT;
+            PointFlowBySlot.TIME_SLOT = req.body.TIME_SLOT ? req.body.TIME_SLOT : PointFlowBySlot.TIME_SLOT;
+            PointFlowBySlot.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : PointFlowBySlot.POINT_ID;
+
             PointFlowBySlot.save(function (err, PointFlowBySlot) {
                 if (err) {
                     return res.status(500).json({

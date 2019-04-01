@@ -27,6 +27,6 @@ db.point_slots_by_day.aggregate([{
         }
     },
     {
-     	$out: 'point_flow_by_slot'   
+        $out: 'point_flow_by_slot'
     }
 ], {})

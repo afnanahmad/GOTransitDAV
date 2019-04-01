@@ -55,6 +55,6 @@ db.descriptive_slots.aggregate([{
         }
     },
     {
-    	$out: "aggregated_points"   
+        $out: "aggregated_points"
     }
 ])

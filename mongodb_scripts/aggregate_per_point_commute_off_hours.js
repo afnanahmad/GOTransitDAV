@@ -20,4 +20,6 @@ db.point_flow_by_slot.aggregate([{
             '$first': '$POINT_ID'
         },
     }
-},{$out: 'point_flow_by_commmute_off'}], {})
+}, {
+    $out: 'point_flow_by_commmute_off'
+}], {})

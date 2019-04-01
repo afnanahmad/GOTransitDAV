@@ -27,7 +27,9 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        CommuteOnPointsModel.findOne({_id: id}, function (err, CommuteOnPoints) {
+        CommuteOnPointsModel.findOne({
+            _id: id
+        }, function (err, CommuteOnPoints) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting CommuteOnPoints.',
@@ -48,12 +50,12 @@ module.exports = {
      */
     create: function (req, res) {
         var CommuteOnPoints = new CommuteOnPointsModel({
-			POINT_ID : req.body.POINT_ID,
-			LONG_NAME : req.body.LONG_NAME,
-			GPS_LATITUDE : req.body.GPS_LATITUDE,
-			GPS_LONGITUDE : req.body.GPS_LONGITUDE,
-			PASSENGER_IN : req.body.PASSENGER_IN,
-			PASSENGER_OUT : req.body.PASSENGER_OUT
+            POINT_ID: req.body.POINT_ID,
+            LONG_NAME: req.body.LONG_NAME,
+            GPS_LATITUDE: req.body.GPS_LATITUDE,
+            GPS_LONGITUDE: req.body.GPS_LONGITUDE,
+            PASSENGER_IN: req.body.PASSENGER_IN,
+            PASSENGER_OUT: req.body.PASSENGER_OUT
 
         });
 
@@ -73,7 +75,9 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
-        CommuteOnPointsModel.findOne({_id: id}, function (err, CommuteOnPoints) {
+        CommuteOnPointsModel.findOne({
+            _id: id
+        }, function (err, CommuteOnPoints) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting CommuteOnPoints',
@@ -87,12 +91,12 @@ module.exports = {
             }
 
             CommuteOnPoints.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : CommuteOnPoints.POINT_ID;
-			CommuteOnPoints.LONG_NAME = req.body.LONG_NAME ? req.body.LONG_NAME : CommuteOnPoints.LONG_NAME;
-			CommuteOnPoints.GPS_LATITUDE = req.body.GPS_LATITUDE ? req.body.GPS_LATITUDE : CommuteOnPoints.GPS_LATITUDE;
-			CommuteOnPoints.GPS_LONGITUDE = req.body.GPS_LONGITUDE ? req.body.GPS_LONGITUDE : CommuteOnPoints.GPS_LONGITUDE;
-			CommuteOnPoints.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : CommuteOnPoints.PASSENGER_IN;
-			CommuteOnPoints.PASSENGER_OUT = req.body.PASSENGER_OUT ? req.body.PASSENGER_OUT : CommuteOnPoints.PASSENGER_OUT;
-			
+            CommuteOnPoints.LONG_NAME = req.body.LONG_NAME ? req.body.LONG_NAME : CommuteOnPoints.LONG_NAME;
+            CommuteOnPoints.GPS_LATITUDE = req.body.GPS_LATITUDE ? req.body.GPS_LATITUDE : CommuteOnPoints.GPS_LATITUDE;
+            CommuteOnPoints.GPS_LONGITUDE = req.body.GPS_LONGITUDE ? req.body.GPS_LONGITUDE : CommuteOnPoints.GPS_LONGITUDE;
+            CommuteOnPoints.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : CommuteOnPoints.PASSENGER_IN;
+            CommuteOnPoints.PASSENGER_OUT = req.body.PASSENGER_OUT ? req.body.PASSENGER_OUT : CommuteOnPoints.PASSENGER_OUT;
+
             CommuteOnPoints.save(function (err, CommuteOnPoints) {
                 if (err) {
                     return res.status(500).json({

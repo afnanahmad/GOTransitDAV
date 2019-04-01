@@ -1,14 +1,14 @@
 var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
+var Schema = mongoose.Schema;
 mongoose.pluralize(null);
 
 var CommuteOnPointsSchema = new Schema({
-	'POINT_ID' : Number,
-	'LONG_NAME' : String,
-	'GPS_LATITUDE' : Number,
-	'GPS_LONGITUDE' : Number,
-	'PASSENGER_IN' : Number,
-	'PASSENGER_OUT' : Number
+	'POINT_ID': Number,
+	'LONG_NAME': String,
+	'GPS_LATITUDE': Number,
+	'GPS_LONGITUDE': Number,
+	'PASSENGER_IN': Number,
+	'PASSENGER_OUT': Number
 });
 
 module.exports = mongoose.model('descriptive_point_flow_by_commmute_on', CommuteOnPointsSchema);

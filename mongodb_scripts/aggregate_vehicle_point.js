@@ -15,10 +15,10 @@ db.regular_trip_stop.aggregate([{
             '$sum': '$PASSENGER_IN'
         },
         VEHICLE_ID: {
-         '$first':	'$VEHICLE_ID'
+            '$first': '$VEHICLE_ID'
         },
         POINT_ID: {
-         '$first':	'$POINT_ID'
+            '$first': '$POINT_ID'
         }
     }
 }, {

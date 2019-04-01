@@ -1,13 +1,13 @@
 var elem = document.getElementById("map");
 var width = 0;
 var height = 0;
-if(elem) {
-   var rect = elem.getBoundingClientRect();
-   width = rect.width;
-   height = rect.height;  
+if (elem) {
+	var rect = elem.getBoundingClientRect();
+	width = rect.width;
+	height = rect.height;
 }
 
-console.log(width+" x "+height);
+console.log(width + " x " + height);
 
 var centerCoordinates = [43.6814927, -79.3639761];
 
@@ -21,38 +21,37 @@ var gl = L.mapboxGL({
 function onEachFeature(feature, layer) {
 
 	var popupContent = "";
-	button = "<a href='viz/point/"+feature.properties.point_id+"' class='btn btn-info' role='button'>Details ></a>";
+	button = "<a href='viz/point/" + feature.properties.point_id + "' class='btn btn-info' role='button'>Details ></a>";
 	//button = "<button type='button' class='thisbutton' point='"+ feature.properties.point_id +"'>Details</button>";
 
 	if (feature.properties && feature.properties.popupContent) {
 		popupContent += "<h5>";
 		popupContent += feature.properties.popupContent;
 		popupContent += "</h5>";
-		popupContent += "<br>"+button;
+		popupContent += "<br>" + button;
 	}
 
 	var content = L.DomUtil.create('div', 'content'),
-	popup = L.popup().setContent(popupContent);
-	
-	L.DomEvent.addListener(content, 'click', function(event){
+		popup = L.popup().setContent(popupContent);
+
+	L.DomEvent.addListener(content, 'click', function (event) {
 		// do stuff
-		console.log("yolo"+ feature);
+		console.log("yolo" + feature);
 	}, layer);
 
 	layer.bindPopup(popup);
 }
 
-function convertRange( value, r1, r2 ) { 
-    return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+function convertRange(value, r1, r2) {
+	return (value - r1[0]) * (r2[1] - r2[0]) / (r1[1] - r1[0]) + r2[0];
 }
 
 function perc2color(perc) {
 	var r, g, b = 0;
-	if(perc < 50) {
+	if (perc < 50) {
 		r = 255;
 		g = Math.round(5.1 * perc);
-	}
-	else {
+	} else {
 		g = 255;
 		r = Math.round(510 - 5.10 * perc);
 	}
@@ -70,9 +69,9 @@ function limit_number(num, max) {
 
 function load_data_from_api(api, inOrOut, wheelchair) {
 
-	d3.json(api).then(function(collection) { 
+	d3.json(api).then(function (collection) {
 
-		var filtered = collection.filter(function(point){
+		var filtered = collection.filter(function (point) {
 			return point.PASSENGER_IN > 0;
 		});
 
@@ -104,29 +103,38 @@ function load_data_from_api(api, inOrOut, wheelchair) {
 
 		var max_num = 40000;
 
-		var map_in = filtered.map(function(o) { return o.PASSENGER_IN; });
-		var max_in = max_num; Math.max.apply(Math, map_in);
+		var map_in = filtered.map(function (o) {
+			return o.PASSENGER_IN;
+		});
+		var max_in = max_num;
+		Math.max.apply(Math, map_in);
 		var min_in = Math.min.apply(Math, map_in);
 
-		var map_out = filtered.map(function(o) { return o.PASSENGER_OUT; });
-		var max_out = max_num; Math.max.apply(Math, map_out);
+		var map_out = filtered.map(function (o) {
+			return o.PASSENGER_OUT;
+		});
+		var max_out = max_num;
+		Math.max.apply(Math, map_out);
 		var min_out = Math.min.apply(Math, map_out);
 
 		var wheel_map, wheel_max, wheel_min;
 
 		var wheel_max = 75;
 		if (wheelchair) {
-			wheel_map = filtered.map(function(o) { return o.WHEELCHAIR_COUNT; });
-			wheel_max = wheel_max; Math.max.apply(Math, wheel_map);
+			wheel_map = filtered.map(function (o) {
+				return o.WHEELCHAIR_COUNT;
+			});
+			wheel_max = wheel_max;
+			Math.max.apply(Math, wheel_map);
 			wheel_min = Math.min.apply(Math, wheel_map);
 		}
 
 
 		var stopFeatures = {
 			"type": "FeatureCollection",
-			"features":	features
+			"features": features
 		};
-		try{
+		try {
 			stopLayer = L.geoJSON([stopFeatures], {
 				style: function (feature) {
 					return feature.properties && feature.properties.style;
@@ -138,18 +146,18 @@ function load_data_from_api(api, inOrOut, wheelchair) {
 
 					var radius = 0;
 					var percentage = 0;
-					
+
 					if (!wheelchair) {
 						if (inOrOut) {
-							radius = convertRange( limit_number(feature.properties.passenger_in, max_num) , [ min_in, max_in ], [ 3, 20 ] );
-							percentage = convertRange( limit_number(feature.properties.passenger_in, max_num), [ max_in, min_in ], [ 1, 100 ] );
+							radius = convertRange(limit_number(feature.properties.passenger_in, max_num), [min_in, max_in], [3, 20]);
+							percentage = convertRange(limit_number(feature.properties.passenger_in, max_num), [max_in, min_in], [1, 100]);
 						} else {
-							radius = convertRange( limit_number(feature.properties.passenger_out, max_num), [ min_out, max_out ], [ 3, 20 ] );
-							percentage = convertRange( limit_number(feature.properties.passenger_out, max_num), [ max_out, min_out ], [ 1, 100 ] );
+							radius = convertRange(limit_number(feature.properties.passenger_out, max_num), [min_out, max_out], [3, 20]);
+							percentage = convertRange(limit_number(feature.properties.passenger_out, max_num), [max_out, min_out], [1, 100]);
 						}
 					} else {
-						radius = convertRange( limit_number(feature.properties.wheelchair_count, wheel_max), [ wheel_min, wheel_max ], [ 3, 20 ] );
-						percentage = convertRange( limit_number(feature.properties.wheelchair_count, wheel_max), [ wheel_max, wheel_min ], [ 1, 100 ] );
+						radius = convertRange(limit_number(feature.properties.wheelchair_count, wheel_max), [wheel_min, wheel_max], [3, 20]);
+						percentage = convertRange(limit_number(feature.properties.wheelchair_count, wheel_max), [wheel_max, wheel_min], [1, 100]);
 					}
 
 					var color = perc2color(percentage);
@@ -164,71 +172,71 @@ function load_data_from_api(api, inOrOut, wheelchair) {
 					});
 				}
 			}).addTo(map);
-		}catch(err) {
+		} catch (err) {
 			console.log(err);
 		}
 
 	});
 }
 
-map.on('popupopen', function() {  
+map.on('popupopen', function () {
 	// $('.thisbutton').click(function(e){
 	//   var val = $('.thisbutton').attr('point');
 	//   console.log("One of the many Small Polygon Links was clicked");
 	// });
 });
 
-$("#whole-month-passenger-in" ).click(function() {
+$("#whole-month-passenger-in").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/aggregate_points/", true, false);
 });
 
-$("#whole-month-passenger-out" ).click(function() {
+$("#whole-month-passenger-out").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/aggregate_points/", false, false);
 });
 
-$("#wheel-chair" ).click(function() {
+$("#wheel-chair").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/point_flow_weekday/", true, true);
 });
 
-$("#weekday-passenger-in" ).click(function() {
+$("#weekday-passenger-in").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/point_flow_weekday/", true, false);
 });
 
-$("#weekday-passenger-out" ).click(function() {
+$("#weekday-passenger-out").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/point_flow_weekday/", false, false);
 });
 
-$("#weekend-passenger-in" ).click(function() {
+$("#weekend-passenger-in").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/point_flow_weekend/", true, false);
 });
 
-$("#weekend-passenger-out" ).click(function() {
+$("#weekend-passenger-out").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/point_flow_weekend/", false, false);
 });
 
-$("#commute-on-passenger-in" ).click(function() {
+$("#commute-on-passenger-in").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/commute_on/", true, false);
 });
 
-$("#commute-on-passenger-out" ).click(function() {
+$("#commute-on-passenger-out").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/commute_on/", false, false);
 });
 
-$("#regular-hours-passenger-in" ).click(function() {
+$("#regular-hours-passenger-in").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/commute_off", true, false);
 });
 
-$("#regular-hours-passenger-out" ).click(function() {
+$("#regular-hours-passenger-out").click(function () {
 	map.removeLayer(stopLayer);
 	load_data_from_api("api/commute_off/", false, false);
 });

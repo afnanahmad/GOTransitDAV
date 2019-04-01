@@ -27,7 +27,9 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        PointSlotsDayModel.find({POINT_ID: id}, function (err, PointSlotsDay) {
+        PointSlotsDayModel.find({
+            POINT_ID: id
+        }, function (err, PointSlotsDay) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointSlotsDay.',
@@ -48,12 +50,12 @@ module.exports = {
      */
     create: function (req, res) {
         var PointSlotsDay = new PointSlotsDayModel({
-			PASSENGER_OUT : req.body.PASSENGER_OUT,
-			WHEELCHAIR_COUNT : req.body.WHEELCHAIR_COUNT,
-			PASSENGER_IN : req.body.PASSENGER_IN,
-			OPD_DATE : req.body.OPD_DATE,
-			TIME_SLOT : req.body.TIME_SLOT,
-			POINT_ID : req.body.POINT_ID
+            PASSENGER_OUT: req.body.PASSENGER_OUT,
+            WHEELCHAIR_COUNT: req.body.WHEELCHAIR_COUNT,
+            PASSENGER_IN: req.body.PASSENGER_IN,
+            OPD_DATE: req.body.OPD_DATE,
+            TIME_SLOT: req.body.TIME_SLOT,
+            POINT_ID: req.body.POINT_ID
 
         });
 
@@ -73,7 +75,9 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
-        PointSlotsDayModel.findOne({_id: id}, function (err, PointSlotsDay) {
+        PointSlotsDayModel.findOne({
+            _id: id
+        }, function (err, PointSlotsDay) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointSlotsDay',
@@ -87,12 +91,12 @@ module.exports = {
             }
 
             PointSlotsDay.PASSENGER_OUT = req.body.PASSENGER_OUT ? req.body.PASSENGER_OUT : PointSlotsDay.PASSENGER_OUT;
-			PointSlotsDay.WHEELCHAIR_COUNT = req.body.WHEELCHAIR_COUNT ? req.body.WHEELCHAIR_COUNT : PointSlotsDay.WHEELCHAIR_COUNT;
-			PointSlotsDay.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointSlotsDay.PASSENGER_IN;
-			PointSlotsDay.OPD_DATE = req.body.OPD_DATE ? req.body.OPD_DATE : PointSlotsDay.OPD_DATE;
-			PointSlotsDay.TIME_SLOT = req.body.TIME_SLOT ? req.body.TIME_SLOT : PointSlotsDay.TIME_SLOT;
-			PointSlotsDay.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : PointSlotsDay.POINT_ID;
-			
+            PointSlotsDay.WHEELCHAIR_COUNT = req.body.WHEELCHAIR_COUNT ? req.body.WHEELCHAIR_COUNT : PointSlotsDay.WHEELCHAIR_COUNT;
+            PointSlotsDay.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointSlotsDay.PASSENGER_IN;
+            PointSlotsDay.OPD_DATE = req.body.OPD_DATE ? req.body.OPD_DATE : PointSlotsDay.OPD_DATE;
+            PointSlotsDay.TIME_SLOT = req.body.TIME_SLOT ? req.body.TIME_SLOT : PointSlotsDay.TIME_SLOT;
+            PointSlotsDay.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : PointSlotsDay.POINT_ID;
+
             PointSlotsDay.save(function (err, PointSlotsDay) {
                 if (err) {
                     return res.status(500).json({
@@ -128,28 +132,28 @@ module.exports = {
     byDay: function (req, res) {
         var id = req.params.id;
         PointSlotsDayModel.aggregate([{
-            $match: {
-                POINT_ID: parseInt(id)
-            }
-        },
-        {
-            "$group": {
-                _id: {
-                    POINT_ID: "$POINT_ID",
-                    OPD_DATE: "$OPD_DATE"
-                },
-                PASSENGER_OUT: {
-                    $sum: "$PASSENGER_OUT"
-                },
-                PASSENGER_IN: {
-                    $sum: "$PASSENGER_IN"
-                },
-                OPD_DATE: {
-                    $first: "$OPD_DATE"
+                $match: {
+                    POINT_ID: parseInt(id)
+                }
+            },
+            {
+                "$group": {
+                    _id: {
+                        POINT_ID: "$POINT_ID",
+                        OPD_DATE: "$OPD_DATE"
+                    },
+                    PASSENGER_OUT: {
+                        $sum: "$PASSENGER_OUT"
+                    },
+                    PASSENGER_IN: {
+                        $sum: "$PASSENGER_IN"
+                    },
+                    OPD_DATE: {
+                        $first: "$OPD_DATE"
+                    }
                 }
             }
-        }
-    ], function(err, PointSlotsDay){
+        ], function (err, PointSlotsDay) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointSlotsDay.',

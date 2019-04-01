@@ -14,7 +14,7 @@ module.exports = {
      */
     list: function (req, res) {
 
-        PointModel.find(function(err, Points){
+        PointModel.find(function (err, Points) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointSlot.',
@@ -24,15 +24,17 @@ module.exports = {
             return res.json(Points);
         });
     },
-    
-    /**
-    * PointSlotMergeController.show()
-    */
-    show: function (req, res) {
-       var point = req.params.point;
 
-       PointSlotModel.find({POINT_ID: slot}, function(err, PointSlots){
-            
+    /**
+     * PointSlotMergeController.show()
+     */
+    show: function (req, res) {
+        var point = req.params.point;
+
+        PointSlotModel.find({
+            POINT_ID: slot
+        }, function (err, PointSlots) {
+
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointSlot.',
@@ -41,6 +43,6 @@ module.exports = {
             }
 
             return res.json(PointSlots);
-       });
+        });
     },
 };

@@ -27,7 +27,9 @@ module.exports = {
      */
     show: function (req, res) {
         var id = req.params.id;
-        PointSlotModel.findOne({_id: id}, function (err, PointSlot) {
+        PointSlotModel.findOne({
+            _id: id
+        }, function (err, PointSlot) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointSlot.',
@@ -48,10 +50,10 @@ module.exports = {
      */
     create: function (req, res) {
         var PointSlot = new PointSlotModel({
-			PASSENGER_OUT : req.body.PASSENGER_OUT,
-			POINT_ID : req.body.POINT_ID,
-			TIME_SLOT : req.body.TIME_SLOT,
-			PASSENGER_IN : req.body.PASSENGER_IN
+            PASSENGER_OUT: req.body.PASSENGER_OUT,
+            POINT_ID: req.body.POINT_ID,
+            TIME_SLOT: req.body.TIME_SLOT,
+            PASSENGER_IN: req.body.PASSENGER_IN
 
         });
 
@@ -71,7 +73,9 @@ module.exports = {
      */
     update: function (req, res) {
         var id = req.params.id;
-        PointSlotModel.findOne({_id: id}, function (err, PointSlot) {
+        PointSlotModel.findOne({
+            _id: id
+        }, function (err, PointSlot) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting PointSlot',
@@ -85,10 +89,10 @@ module.exports = {
             }
 
             PointSlot.PASSENGER_OUT = req.body.PASSENGER_OUT ? req.body.PASSENGER_OUT : PointSlot.PASSENGER_OUT;
-			PointSlot.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : PointSlot.POINT_ID;
-			PointSlot.TIME_SLOT = req.body.TIME_SLOT ? req.body.TIME_SLOT : PointSlot.TIME_SLOT;
-			PointSlot.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointSlot.PASSENGER_IN;
-			
+            PointSlot.POINT_ID = req.body.POINT_ID ? req.body.POINT_ID : PointSlot.POINT_ID;
+            PointSlot.TIME_SLOT = req.body.TIME_SLOT ? req.body.TIME_SLOT : PointSlot.TIME_SLOT;
+            PointSlot.PASSENGER_IN = req.body.PASSENGER_IN ? req.body.PASSENGER_IN : PointSlot.PASSENGER_IN;
+
             PointSlot.save(function (err, PointSlot) {
                 if (err) {
                     return res.status(500).json({
